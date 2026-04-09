@@ -95,6 +95,7 @@ rollback() {
   restore_backup ".env"
   docker compose -f docker-compose.yml down >/dev/null 2>&1 || true
   docker compose -f docker-compose.yml up -d --build || true
+  docker update --restart unless-stopped commodity-postgres commodity-app >/dev/null 2>&1 || true
   set -e
 }
 
@@ -110,6 +111,7 @@ ls -la
 
 docker compose -f docker-compose.yml down || true
 docker compose -f docker-compose.yml up -d --build
+docker update --restart unless-stopped commodity-postgres commodity-app
 docker compose -f docker-compose.yml ps
 REMOTE
 
