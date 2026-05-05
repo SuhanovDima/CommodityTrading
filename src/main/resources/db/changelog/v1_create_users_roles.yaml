@@ -86,3 +86,76 @@ databaseChangeLog:
             referencedColumnNames: id
             constraintName: fk_user_roles_role
             onDelete: CASCADE
+
+  - changeSet:
+      id: v1-insert-default-data
+      author: assistant
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: USER
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: ADMIN
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: username
+                  value: user
+              - column:
+                  name: password
+                  # BCrypt hash for "password"
+                  value: $2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi
+              - column:
+                  name: enabled
+                  valueBoolean: true
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  # BCrypt hash for "admin"
+                  value: $2a$10$XQEzHcOkRgDqFqMJfYMxU.FZeIhZv6bNx9dYqL8hPqWzKjN4yGxWi
+              - column:
+                  name: enabled
+                  valueBoolean: true
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+              - column:
+                  name: role_id
+                  valueNumeric: 1
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: 2
+              - column:
+                  name: role_id
+                  valueNumeric: 2
