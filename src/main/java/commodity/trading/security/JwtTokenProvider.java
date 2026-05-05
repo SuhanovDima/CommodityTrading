@@ -88,4 +88,8 @@ public class JwtTokenProvider {
     public long getAccessTokenValidityMs() {
         return accessTokenValidityMs;
     }
+
+    public long getRefreshTokenValidityMs() {
+        return refreshTokenValidityMs;
+    }
 }

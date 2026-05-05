@@ -1,190 +1,45 @@
 ```
-# Dependencies
+# Compiled and build artifacts
+*.class
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.out
+build/
 target/
-.mvn/
-.gradle/
 
-# Logs
+# Dependencies
+.gradle/
+.mypy_cache/
+.pytest_cache/
+coverage/
+htmlcov/
+.dist-info/
+
+# Logs and temp files
 *.log
+*.tmp
+*.swp
+*.swo
 
 # Environment
 .env
 .env.local
 *.env.*
 
-# IDE
+# Editors
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Build artifacts
-build/
-dist/
-*.jar
-*.war
-*.class
-*.o
-*.obj
-*.out
+# System
+.DS_Store
+Thumbs.db
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
-.eggs/
+# Coverage
 .coverage
-coverage/
-htmlcov/
-.mypy_cache/
-.pytest_cache/
-.tox/
-.nox/
-
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Ruby
-*.gem
-*.rbc
-.bundle/
-.jruby_cache/
-.rbx/
-
-# Go
-*.o
-*.so
-*.a
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
-*.pyc......
 ```

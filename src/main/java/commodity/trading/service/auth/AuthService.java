@@ -68,7 +68,7 @@ public class AuthService {
         jwtTokenRepository.save(refreshJwtToken);
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(a -> a.getAuthority().replace("ROLE_", ""))
+                .map(a -> a.getAuthority())
                 .toList();
 
         return AuthResponse.of(accessToken, refreshToken, jwtTokenProvider.getAccessTokenValidityMs() / 1000, userDetails.getUsername(), roles);
@@ -117,7 +117,7 @@ public class AuthService {
         jwtTokenRepository.save(newRefreshJwtToken);
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(a -> a.getAuthority().replace("ROLE_", ""))
+                .map(a -> a.getAuthority())
                 .toList();
 
         return AuthResponse.of(newAccessToken, newRefreshToken, jwtTokenProvider.getAccessTokenValidityMs() / 1000, userDetails.getUsername(), roles);
