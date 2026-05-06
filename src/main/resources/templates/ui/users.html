@@ -50,11 +50,12 @@
                     <th>Username</th>
                     <th>Enabled</th>
                     <th>Roles</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(users)}">
-                    <td colspan="4" class="text-center text-muted py-3">No users yet</td>
+                    <td colspan="5" class="text-center text-muted py-3">No users yet</td>
                 </tr>
                 <tr th:each="user : ${users}">
                     <td th:text="${user.id()}"></td>
@@ -64,11 +65,53 @@
                         <span th:if="${#sets.isEmpty(user.roles())}" class="text-muted">-</span>
                         <span th:unless="${#sets.isEmpty(user.roles())}" th:text="${#strings.listJoin(user.roles().![name()], ', ')}"></span>
                     </td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-danger btn-sm"
+                                th:if="${#authorization.expression('hasRole(''ADMIN'')')} and ${user.id() != currentUserId}"
+                                th:attr="data-user-id=${user.id()},data-username=${user.username()}"
+                                onclick="confirmDelete(this)">
+                            Delete
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script th:inline="javascript">
+    const currentUserId = /*[[${currentUserId}]]*/ null;
+
+    function confirmDelete(button) {
+        const userId = button.getAttribute('data-user-id');
+        const username = button.getAttribute('data-username');
+
+        if (confirm('Are you sure you want to delete user "' + username + '"?')) {
+            fetch('/api/users/' + userId, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else if (response.status === 403) {
+                    alert('Forbidden: You do not have permission to delete this user.');
+                } else if (response.status === 404) {
+                    alert('User not found.');
+                } else {
+                    alert('Error deleting user.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the user.');
+            });
+        }
+    }
+</script>
 </body>
 </html>

@@ -2,8 +2,10 @@ package commodity.trading.controller.ui;
 
 import commodity.trading.dto.UserCreateRequest;
 import commodity.trading.exception.ConflictException;
+import commodity.trading.security.CustomUserDetails;
 import commodity.trading.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,8 +26,11 @@ public class UserUiController {
     }
 
     @GetMapping
-    public String usersPage(Model model) {
+    public String usersPage(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         model.addAttribute("users", userService.getAllUsers());
+        if (currentUser != null) {
+            model.addAttribute("currentUserId", currentUser.getUserId());
+        }
         if (!model.containsAttribute("userForm")) {
             model.addAttribute("userForm", new UserCreateRequest("", "", Boolean.TRUE));
         }
