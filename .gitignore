@@ -1,4 +1,1 @@
-```
-# Configuration and changelog files should not be ignored
-# The modified file is a database changelog which is part of the source
-```
+Nothing should be ignored since the changes only include HTML template files which are source files.
