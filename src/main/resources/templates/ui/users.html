@@ -11,7 +11,10 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Users</h1>
-        <a class="btn btn-outline-secondary btn-sm" th:href="@{/ui/roles}">Roles</a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/ui/roles}">Roles</a>
+            <button id="logoutBtn" class="btn btn-outline-danger btn-sm">Logout</button>
+        </div>
     </div>
 
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
@@ -70,5 +73,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+        const token = localStorage.getItem('accessToken');
+        
+        try {
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ token })
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('tokenType');
+            localStorage.removeItem('username');
+            localStorage.removeItem('roles');
+            window.location.href = '/ui/login?logout=true';
+        }
+    });
+</script>
 </body>
 </html>
