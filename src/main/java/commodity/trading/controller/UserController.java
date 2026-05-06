@@ -2,9 +2,13 @@ package commodity.trading.controller;
 
 import commodity.trading.dto.UserCreateRequest;
 import commodity.trading.dto.UserResponse;
+import commodity.trading.security.CustomUserDetails;
 import commodity.trading.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,5 +46,15 @@ public class UserController {
             @PathVariable Long roleId
     ) {
         return userService.assignRole(id, roleId);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails currentUser
+    ) {
+        userService.deleteUser(id, currentUser.getUserId());
     }
 }

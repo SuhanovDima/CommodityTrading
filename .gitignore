@@ -1,4 +1,33 @@
 ```
-# Configuration and changelog files should not be ignored
-# The modified file is a database changelog which is part of the source
+# Compiled and build artifacts
+*.class
+*.o
+*.obj
+*.out
+target/
+
+# Dependencies
+.mypy_cache/
+.pytest_cache/
+coverage/
+htmlcov/
+.coverage
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
 ```

@@ -9,6 +9,7 @@ import commodity.trading.exception.ConflictException;
 import commodity.trading.exception.NotFoundException;
 import commodity.trading.repository.RoleRepository;
 import commodity.trading.repository.UserRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,19 @@ public class UserService {
         }
 
         return toResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public void deleteUser(Long id, Long currentUserId) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("User with id '%d' not found".formatted(id));
+        }
+
+        if (id.equals(currentUserId)) {
+            throw new AccessDeniedException("Cannot delete yourself");
+        }
+
+        userRepository.deleteById(id);
     }
 
     private UserResponse toResponse(User user) {
