@@ -4,13 +4,13 @@ import commodity.trading.entity.Role;
 import commodity.trading.entity.User;
 import commodity.trading.repository.RoleRepository;
 import commodity.trading.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import commodity.trading.security.CustomUserDetails;
+import commodity.trading.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,11 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+    "spring.datasource.driver-class-name=org.h2.Driver",
+    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
+    "spring.liquibase.enabled=false"
+})
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
@@ -30,9 +34,6 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -43,21 +44,22 @@ class UserControllerIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     private User adminUser;
     private User regularUser;
-    private Role adminRole;
-    private Role userRole;
 
     @BeforeEach
     void setUp() {
-        roleRepository.deleteAll();
         userRepository.deleteAll();
+        roleRepository.deleteAll();
 
-        adminRole = new Role();
+        Role adminRole = new Role();
         adminRole.setName("ADMIN");
         adminRole = roleRepository.save(adminRole);
 
-        userRole = new Role();
+        Role userRole = new Role();
         userRole.setName("USER");
         userRole = roleRepository.save(userRole);
 
@@ -78,22 +80,34 @@ class UserControllerIntegrationTest {
 
     @Test
     void deleteUser_WithAdminRole_ShouldReturnNoContent() throws Exception {
+        String token = jwtTokenProvider.generateAccessToken(
+                new CustomUserDetails(adminUser)
+        );
+        
         mockMvc.perform(delete("/api/users/{id}", regularUser.getId())
-                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteUser_WithoutAdminRole_ShouldReturnForbidden() throws Exception {
+        String token = jwtTokenProvider.generateAccessToken(
+                new CustomUserDetails(regularUser)
+        );
+        
         mockMvc.perform(delete("/api/users/{id}", regularUser.getId())
-                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void deleteUser_NotFound_ShouldReturnNotFound() throws Exception {
+        String token = jwtTokenProvider.generateAccessToken(
+                new CustomUserDetails(adminUser)
+        );
+        
         mockMvc.perform(delete("/api/users/{id}", 999L)
-                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound());
     }
 }
