@@ -2,6 +2,7 @@ package commodity.trading.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commodity.trading.exception.NotFoundException;
+import commodity.trading.repository.JwtTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,15 +28,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
+    private final JwtTokenRepository jwtTokenRepository;
 
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
             UserDetailsService userDetailsService,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            JwtTokenRepository jwtTokenRepository
     ) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
         this.objectMapper = objectMapper;
+        this.jwtTokenRepository = jwtTokenRepository;
     }
 
     @Override
@@ -54,6 +58,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                     if (jwtTokenProvider.validateToken(jwt, userDetails)) {
+                        // Check if token is revoked
+                        var storedToken = jwtTokenRepository.findByToken(jwt);
+                        if (storedToken.isPresent() && storedToken.get().getRevoked()) {
+                            throw new NotFoundException("Token has been revoked");
+                        }
+
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
