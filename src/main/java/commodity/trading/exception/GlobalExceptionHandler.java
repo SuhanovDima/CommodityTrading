@@ -3,6 +3,8 @@ package commodity.trading.exception;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +49,22 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Bad Request");
         problemDetail.setType(URI.create("https://httpstatuses.com/400"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler({AuthenticationCredentialsNotFoundException.class})
+    public ProblemDetail handleUnauthenticated(AuthenticationCredentialsNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Authentication required");
+        problemDetail.setTitle("Unauthorized");
+        problemDetail.setType(URI.create("https://httpstatuses.com/401"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ProblemDetail handleAccessDenied(AccessDeniedException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+        problemDetail.setTitle("Forbidden");
+        problemDetail.setType(URI.create("https://httpstatuses.com/403"));
         return problemDetail;
     }
 

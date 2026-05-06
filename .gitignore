@@ -1,13 +1,4 @@
-# IntelliJ / IDEA
-.idea/
-*.iml
-
-# VS Code
-.vscode/
-
-# Maven / Java
-target/
-*.class
-
-# Env files / secrets
-.env
+```
+# Configuration and changelog files should not be ignored
+# The modified file is a database changelog which is part of the source
+```
