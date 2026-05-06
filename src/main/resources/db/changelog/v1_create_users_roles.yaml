@@ -137,7 +137,7 @@ databaseChangeLog:
               - column:
                   name: password
                   # BCrypt hash for "admin"
-                  value: $2a$10$XQEzHcOkRgDqFqMJfYMxU.FZeIhZv6bNx9dYqL8hPqWzKjN4yGxWi
+                  value: $2a$10$F96gTYlsyvjZkct6mGdYYu1RxK6dJmGSz1F1zECxWX9eUjNI3pyEu
               - column:
                   name: enabled
                   valueBoolean: true

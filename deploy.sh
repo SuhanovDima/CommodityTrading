@@ -111,7 +111,6 @@ ls -la
 
 docker compose -f docker-compose.yml down || true
 docker compose -f docker-compose.yml up -d --build
-docker update --restart unless-stopped commodity-postgres commodity-app
 docker compose -f docker-compose.yml ps
 REMOTE
 
