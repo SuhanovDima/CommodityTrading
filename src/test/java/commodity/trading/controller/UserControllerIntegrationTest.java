@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,21 +77,21 @@ class UserControllerIntegrationTest {
     @Test
     void deleteUser_WithAdminRole_ShouldReturnNoContent() throws Exception {
         mockMvc.perform(delete("/api/users/{id}", regularUser.getId())
-                        .with(jwt().authorities("ROLE_ADMIN")))
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteUser_WithoutAdminRole_ShouldReturnForbidden() throws Exception {
         mockMvc.perform(delete("/api/users/{id}", regularUser.getId())
-                        .with(jwt().authorities("ROLE_USER")))
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void deleteUser_NotFound_ShouldReturnNotFound() throws Exception {
         mockMvc.perform(delete("/api/users/{id}", 999L)
-                        .with(jwt().authorities("ROLE_ADMIN")))
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isNotFound());
     }
 }
