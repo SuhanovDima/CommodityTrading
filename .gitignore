@@ -1,12 +1,52 @@
-```
+```gitignore
 # Compiled and build artifacts
 *.class
 target/
+
 # Dependencies
 .m2/
+.gradle/
+
 # Logs and temp files
 *.log
+*.tmp
+
+# Environment
+.env
+.env.local
+*.env.*
+
 # Editors
-.idea/
 .vscode/
+.idea/
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+pip-log.txt
+pip-selfcheck.json
+
+# Java specific
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Testing
+*.tmp
+*.temp
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
 ```

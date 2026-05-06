@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@ActiveProfiles("test")
 class UserControllerIntegrationTest {
 
     @Autowired
@@ -48,30 +50,30 @@ class UserControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
         roleRepository.deleteAll();
+        userRepository.deleteAll();
 
         adminRole = new Role();
         adminRole.setName("ADMIN");
-        roleRepository.save(adminRole);
+        adminRole = roleRepository.save(adminRole);
 
         userRole = new Role();
         userRole.setName("USER");
-        roleRepository.save(userRole);
+        userRole = roleRepository.save(userRole);
 
         adminUser = new User();
         adminUser.setUsername("admin");
         adminUser.setPassword(passwordEncoder.encode("password"));
         adminUser.setEnabled(true);
         adminUser.setRoles(Set.of(adminRole));
-        userRepository.save(adminUser);
+        adminUser = userRepository.save(adminUser);
 
         regularUser = new User();
         regularUser.setUsername("user");
         regularUser.setPassword(passwordEncoder.encode("password"));
         regularUser.setEnabled(true);
         regularUser.setRoles(Set.of(userRole));
-        userRepository.save(regularUser);
+        regularUser = userRepository.save(regularUser);
     }
 
     @Test

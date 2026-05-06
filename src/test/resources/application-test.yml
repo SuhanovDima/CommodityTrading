@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  liquibase:
+    enabled: false
+
+jwt:
+  secret: YWRmMzQyYTAtZDc4OS00NjRiLWI5MzktMWE0YTVhNDI1MWQx
+  expiration-ms: 2592000000
+  refresh-token-expiration-ms: 604800000
+
+server:
+  port: 8090
