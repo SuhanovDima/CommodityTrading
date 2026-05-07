@@ -4,6 +4,7 @@ import commodity.trading.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,15 +46,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/ui/login", "/ui/login.html").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/ui/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/ui/logout").permitAll()
                         .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
+                            if (request.getRequestURI().startsWith("/ui/")) {
+                                response.sendRedirect("/ui/login");
+                                return;
+                            }
                             response.setStatus(401);
-                            response.setContentType("application/json");
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {

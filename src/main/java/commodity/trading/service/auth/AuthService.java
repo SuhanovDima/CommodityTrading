@@ -125,8 +125,10 @@ public class AuthService {
 
     @Transactional
     public void logout(String token) {
-        if (token != null && !token.isEmpty()) {
-            jwtTokenRepository.revokeByToken(token);
+        if (token == null || token.isBlank()) {
+            return;
         }
+
+        jwtTokenRepository.deleteByToken(token);
     }
 }

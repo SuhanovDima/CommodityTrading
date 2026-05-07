@@ -2,12 +2,12 @@ package commodity.trading.controller;
 
 import commodity.trading.dto.auth.AuthResponse;
 import commodity.trading.dto.auth.LoginRequest;
-import commodity.trading.dto.auth.LogoutRequest;
 import commodity.trading.dto.auth.RefreshTokenRequest;
 import commodity.trading.service.auth.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,20 +36,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(
-            @RequestBody(required = false) LogoutRequest request,
-            HttpServletRequest httpServletRequest
-    ) {
-        String token = null;
-        if (request != null && request.token() != null) {
-            token = request.token();
-        } else {
-            String authorizationHeader = httpServletRequest.getHeader("Authorization");
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                token = authorizationHeader.substring(7);
-            }
+    public ResponseEntity<Void> logout(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
+        authService.logout(extractBearerToken(authorizationHeader));
+        return ResponseEntity.noContent().build();
+    }
+
+    private String extractBearerToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
         }
-        authService.logout(token);
-        return ResponseEntity.ok().build();
+        return null;
     }
 }

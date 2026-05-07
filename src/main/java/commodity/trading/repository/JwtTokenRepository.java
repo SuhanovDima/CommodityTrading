@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface JwtTokenRepository extends JpaRepository<JwtToken, Long> {
 
     Optional<JwtToken> findByToken(String token);
+    void deleteByToken(String token);
 
     @Modifying
     @Query("UPDATE JwtToken t SET t.revoked = true WHERE t.user.id = :userId AND t.revoked = false")

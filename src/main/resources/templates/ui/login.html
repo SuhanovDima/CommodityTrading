@@ -159,7 +159,7 @@
         });
 
         function checkExistingToken() {
-            const token = localStorage.getItem('accessToken');
+            const token = localStorage.getItem('accessToken') || getCookie('accessToken');
             if (token) {
                 window.location.href = '/ui/users';
             }
@@ -197,6 +197,7 @@
                 localStorage.setItem('tokenType', data.tokenType);
                 localStorage.setItem('username', data.username);
                 localStorage.setItem('roles', JSON.stringify(data.roles));
+                setCookie('accessToken', data.accessToken);
                 
                 showSuccess('Login successful! Redirecting...');
                 
@@ -248,11 +249,13 @@
                 const data = await response.json();
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('refreshToken', data.refreshToken);
+                setCookie('accessToken', data.accessToken);
                 return data.accessToken;
                 
             } catch (error) {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
+                clearCookie('accessToken');
                 window.location.href = '/ui/login?loggedOut=true';
                 return null;
             }
@@ -308,8 +311,24 @@
                 localStorage.removeItem('tokenType');
                 localStorage.removeItem('username');
                 localStorage.removeItem('roles');
+                clearCookie('accessToken');
                 window.location.href = '/ui/login?logout=true';
             }
+        }
+
+        function setCookie(name, value) {
+            document.cookie = name + '=' + encodeURIComponent(value) + '; Path=/; SameSite=Lax';
+        }
+
+        function getCookie(name) {
+            const match = document.cookie
+                .split('; ')
+                .find(row => row.startsWith(name + '='));
+            return match ? decodeURIComponent(match.split('=')[1]) : null;
+        }
+
+        function clearCookie(name) {
+            document.cookie = name + '=; Path=/; Max-Age=0; SameSite=Lax';
         }
     </script>
 </body>

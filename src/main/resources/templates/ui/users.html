@@ -11,7 +11,10 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Users</h1>
-        <a class="btn btn-outline-secondary btn-sm" th:href="@{/ui/roles}">Roles</a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/ui/roles}">Roles</a>
+            <button id="logoutBtn" type="button" class="btn btn-outline-danger btn-sm">Logout</button>
+        </div>
     </div>
 
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
@@ -70,5 +73,26 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('logoutBtn').addEventListener('click', async function () {
+        const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+        try {
+            const headers = {};
+            if (token) {
+                headers.Authorization = 'Bearer ' + token;
+            }
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers
+            });
+        } finally {
+            localStorage.clear();
+            sessionStorage.clear();
+            document.cookie = 'accessToken=; Path=/; Max-Age=0; SameSite=Lax';
+            window.location.href = '/ui/login';
+        }
+    });
+</script>
 </body>
 </html>
